@@ -677,7 +677,13 @@ class DictSet(VaspInputSet):
         if settings.get("length"):
             return Kpoints.automatic(settings["length"])
 
-        # Raise error. Unsure of which kpoint generation to use
+        # If atomatic_density_by_length is in kpoints_settings use Kpoints.automatic_density_by_lengths
+        if settings.get("atomatic_density_by_length"):
+            return Kpoints.automatic_density_by_lengths(
+                self.structure, [settings["atomatic_density_by_length"]]*3, self.force_gamma
+            )
+
+       # Raise error. Unsure of which kpoint generation to use
         raise ValueError(
             "Invalid KPoint Generation algo : Supported Keys are "
             "grid_density: for Kpoints.automatic_density generation, "
@@ -892,6 +898,20 @@ class MPRelaxSet(DictSet):
         super().__init__(structure, MPRelaxSet.CONFIG, **kwargs)
         self.kwargs = kwargs
 
+class RelaxSetOne(DictSet):
+    """
+    For cast Al alloy
+    """
+
+    CONFIG = _load_yaml_config("RelaxSetOne")
+
+    def __init__(self, structure: Structure, **kwargs):
+        """
+        :param structure: Structure
+        :param kwargs: Same as those supported by DictSet.
+        """
+        super().__init__(structure, RelaxSetOne.CONFIG, **kwargs)
+        self.kwargs = kwargs
 
 class MPScanRelaxSet(DictSet):
     """
@@ -1223,6 +1243,19 @@ class MPStaticSet(MPRelaxSet):
         input_set = cls(_dummy_structure, **kwargs)
         return input_set.override_from_prev_calc(prev_calc_dir=prev_calc_dir)
 
+class StaticSetOne(DictSet):
+    """
+    For cast alloy
+    """
+    CONFIG = _load_yaml_config("StaticSetOne")
+
+    def __init__(self, structure: Structure, **kwargs):
+        """
+        :param structure: Structure
+        :param kwargs: Same as those supported by DictSet.
+        """
+        super().__init__(structure, StaticSetOne.CONFIG, **kwargs)
+        self.kwargs = kwargs
 
 class MPScanStaticSet(MPScanRelaxSet):
     """

@@ -1314,9 +1314,9 @@ class Kpoints(MSONable):
         lattice = structure.lattice
         abc = lattice.abc
         num_div = [
-            np.ceil(length_densities[0] / abc[0]),
-            np.ceil(length_densities[1] / abc[1]),
-            np.ceil(length_densities[2] / abc[2]),
+            int(np.ceil(length_densities[0] / abc[0])), # float in KPOINTS causes an error when it is read by pymatgen
+            int(np.ceil(length_densities[1] / abc[1])),
+            int(np.ceil(length_densities[2] / abc[2])),
         ]
         is_hexagonal = lattice.is_hexagonal()
         has_odd = any(i % 2 == 1 for i in num_div)
